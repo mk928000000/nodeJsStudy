@@ -89,10 +89,10 @@
 
 <br/>
 
-11. 태스크 큐에서 호출스택으로 fly 가 이동되고 실행된다.
+11. 태스크 큐에서 호출스택으로 fly 가 이동되고 실행된다. _(이벤트루프)_
 `[fly]`
 
-![](https://images.velog.io/images/mk928000000/post/c2f8d232-4e60-439d-8081-430e7ce1fbe1/%EA%B5%AC%EC%A1%B04.PNG)
+![](https://images.velog.io/images/mk928000000/post/3a25f106-2919-45b3-a90f-9c65d2fa0aae/%EA%B5%AC%EC%A1%B04.PNG)
 
 
 12. fly 함수 안의 console.log('3초 후 날기')  실행 -> 호출스택에 console.log 쌓임
