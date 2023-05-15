@@ -82,3 +82,12 @@
    - 하위문서를 나타낼땐 / 사용
    - 파일확장자 .html 쓰지 말기
    - 띄어쓰기는 대시 (-) 이용
+
+## 몽고db 사용
+
+1. 무료 호스팅을 받아 쓰자 mongodb atlas!
+2. npm install mongodb@3.6.4 설치
+3. server.js 에 mongodb 연결문 추가 + connect url 붙이기
+4. 연결 확인
+5. 테이블 만들기 ( database, collection) > todoApp , post
+6. 연결문에 db 연결, 몽고db 문법으로 데이터 넣어보기
