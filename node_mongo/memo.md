@@ -91,3 +91,32 @@
 4. 연결 확인
 5. 테이블 만들기 ( database, collection) > todoApp , post
 6. 연결문에 db 연결, 몽고db 문법으로 데이터 넣어보기
+
+
+## npm install ejs (대체품 : vue, react ..)
+EJS 라이브러리로 서버에서 데이터를 쉽게 가져온다.
+** 요새는 npm 설치 후 --save --save dev 이런거 안해도 됨.
+1. server.js 에 추가
+app.set('view engine', 'ejs');
+2. 이제 웹 페이즈를 만들때 .html 뿐 아니라 .ejs 라고 쓸 수 있다. .html 과 동일하나, html 안에 서버 데이터를 넣어줄 수 있다.
+3. 데이터 집어넣는 방식 : <%= 변수이름 %>
+4. ejs 파일 get 방법 
+   app.get("/list", function(req, res){
+   // ejs 파일 불러오는것은 방식이 조금 다르다
+   res.render("list.ejs");
+   });
+5. 멋진 에러 발생
+   Error: Failed to lookup view "list.ejs" in views directory "C:\Dev\node_mongo\views" 
+   ### ejs 파일은 views 폴더 하위에 있어야 하기 때문
+   ### views 폴더를 만들고 list.ejs 를 하위로 옮겨준다
+   /views/list.ejs  
+6. 새로고침 후 화면 확인
+
+
+## ejs 문법
+.ejs 파일에서 자바스크립트 문법을 사용할 수 있다.
+아래처럼 <% %> 안에 스크립트를 쓰면 html 태그와 함께 쓸 수 있다.
+      <% for(var i=1; i < posts.length; i++) {  %>
+      <h4>할일 제목 : <%=posts[i].제목 %></h4>
+      <p>할일 기한 : <%=posts[i].날짜  %></p>
+      <%} %>
