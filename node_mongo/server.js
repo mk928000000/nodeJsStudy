@@ -11,6 +11,7 @@ const app = express();
 //body parser 라이브러리가 express 에 포함되어있다. 사용하도록 한줄 추가.
 app.use(express.urlencoded({ extended: true }));
 const MongoClient = require("mongodb").MongoClient; // 몽고db library 필요
+app.set('view engine', 'ejs'); // ejs 라이브러리 추가
 var db;
 MongoClient.connect(
   "mongodb+srv://nodeMongo:nodeMongo@cluster0.ezcucwb.mongodb.net/?retryWrites=true&w=majority",
@@ -57,6 +58,17 @@ app.get("/", function (req, res) {
 app.get("/write", function (req, res) {
   res.sendFile(__dirname + "/write.html");
 });
+app.get("/list", function(req, res){
+  // DB에 저장된 POST 이름의 collection 안의 모든 데이터를 꺼낸다
+  db.collection('post').find().toArray(function (err,result){
+    console.log(result);
+    // ejs 파일 불러오는것은 방식이 조금 다르다
+    // ejs 파일을 불러오면서 db에서 가져온 result 를 posts 라는 이름으로 보낸다
+    res.render("list.ejs", {posts : result});
+  });
+
+});
+
 
 /*
  * 함수 안에 함수 (function(){}) = 콜백함수
