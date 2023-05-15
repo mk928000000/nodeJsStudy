@@ -49,19 +49,19 @@
     <!-- navbar  END-->
 
     <!-- 입력부분 START -->
-    <form>
-        <div class="wrap ms-3">
-            <div class="mb-3">
-            <label for="exampleInputEmail1" class="form-label">할 일</label>
-            <input type="email" class="form-control" id="exampleInputEmail1" aria-describedby="emailHelp">
+    <div class="mt-4">
+     <form action="/add" method="POST"> <!--FORM 정보를 서버로 전달하기 위한 필수속성 -->
+            <div class="form-group">
+                <label>할 일</label>
+                <input type="text" class="form-control" name="title">
             </div>
-            <div class="mb-3">
-            <label for="exampleInputPassword1" class="form-label">Due date</label>
-            <input type="password" class="form-control" id="exampleInputPassword1">
+            <div class="form-group">
+                <label>Due date</label>
+                <input type="text" class="form-control" name="date">
             </div>
             <button type="submit" class="btn btn-danger">Submit</button>
-        </div>
-    </form>
+        </form>
+    </div>
     <!-- 입력부분 END -->
 
     <!-- 코드 입력부분 END -->
