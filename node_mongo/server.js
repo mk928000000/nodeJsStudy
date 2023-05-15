@@ -10,12 +10,32 @@ const express = require("express");
 const app = express();
 //body parser 라이브러리가 express 에 포함되어있다. 사용하도록 한줄 추가.
 app.use(express.urlencoded({ extended: true }));
+const MongoClient = require("mongodb").MongoClient; // 몽고db library 필요
+var db;
+MongoClient.connect(
+  "mongodb+srv://nodeMongo:nodeMongo@cluster0.ezcucwb.mongodb.net/?retryWrites=true&w=majority",
+  function (err, client) {
+    //연결되면 할 일.
+    // connection err 일 경우
+    if (err) return console.log(err);
 
-// 58080포트에 서버를 어디에다 열겠다.
-app.listen(58080, function () {
-  // 터미널에 node server.js 를 치면 아래 콘솔문이 뜬다. 확인 후 웹창에 localhost:58080 을 검색하면 서버 화면이 열린다.
-  console.log("listening on 58080");
-});
+    // todoApp database 연결
+    db = client.db("todoApp");
+    // post collection 에 데이터 임시로 추가해봄
+    // db.collection("post").insertOne(
+    //   { 이름: "John", 나이: 20 },
+    //   function (err, result) {
+    //     console.log("저장완료");
+    //   }
+    // );
+    // 데이터 컬럼 중 _id 는 설정을 안하면 알아서 부여됨.
+
+    //에러 없으면 서버 연결!
+    app.listen(58080, function () {
+      console.log("listening on 58080");
+    });
+  }
+);
 
 // /pet 으로 방문을 하면, pet관련된 안내문을 띄워보자.
 //app.get("경로", function (요청, 응답) {
@@ -52,5 +72,11 @@ app.post("/add", function (req, res) {
   res.send("전송완료");
   console.log(req.body.title);
   console.log(req.body.date);
-  //DB 에 저장하라 (Rest API)
+  //DB 에 저장하라 (Rest API 개념 알기)
+  db.collection("post").insertOne(
+    { 제목: req.body.title, 날짜: req.body.date },
+    function (err, result) {
+      console.log("저장완료");
+    }
+  );
 });
