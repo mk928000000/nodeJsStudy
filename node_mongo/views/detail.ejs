@@ -12,58 +12,29 @@
       integrity="sha384-EVSTQN3/azprG1Anm3QDgpJLIm9Nao0Yz1ztcQTwFspd3yD65VohhpuuCOmLASjC"
       crossorigin="anonymous"
     />
-
     <link rel="stylesheet" href="/public/main.css" />
-
     <title>Hello, world!</title>
   </head>
   <body>
     <!-- navbar START -->
     <%- include('nav.html') %>
-    <!-- navbar  END -->
-    <div class="container">
-      <h4 class="ml-2 my-3 text-center">서버에서 가져온 할 일 리스트</h4>
-      <ul class="list-group list-group">
-        <% for(var i=0; i < posts.length; i++) { %>
-        <li class="list-group-item my">
-          <h4>
-            <a href="/detail/<%=posts[i]._id %>"
-              >할일 제목 : <%=posts[i].제목 %></a
-            >
-          </h4>
-          <p>할일 기한 : <%=posts[i].날짜 %></p>
-          <button data-id="<%=posts[i]._id %>" class="btn btn-danger delete">
-            삭제
-          </button>
-        </li>
-        <%} %>
-      </ul>
+    <!-- navbar  END --><!-- navbar  END-->
+
+    <div class="container mt-4">
+      <h4 class="ml-2 my-3 text-center">상세페이지</h4>
+
+      <div class="card" style="width: 100%">
+        <div class="card-body">
+          <h5 class="card-title"><%=post.제목 %></h5>
+          <h6 class="card-subtitle mb-2 text-muted"><%=post.날짜 %></h6>
+          <p class="card-text"><%=post.내용 %></p>
+          <a href="/edit/<%=post._id%>" class="card-link">수정하기</a>
+        </div>
+      </div>
     </div>
+
     <script src="https://code.jquery.com/jquery-3.4.1.min.js"></script>
-    <script>
-      $(".delete").click(function (e) {
-        var 글번호 = e.target.dataset.id;
-        var 지금누른버튼 = $(this);
-        $.ajax({
-          method: "DELETE",
-          url: "/delete",
-          data: { _id: 글번호 },
-        })
-          .done(function (result) {
-            //서버에서 코드200을 보낼때 (성공햇을 때)
-            console.log("성공햇어염");
-            //삭제한걸 안보이게 처리!
-            //삭제버튼을 누른 <li> 요소를 제거/안보이게.
-            지금누른버튼.parent("li").fadeOut();
-          })
-          .fail(function (xhr, textStatus, errorThrown) {
-            //textStatus : 응답코드
-            //errorThrown : 에러메세지
-            //요청이 실패했을 때 실행할 코드
-            console.log(xhr, textStatus, errorThrown);
-          });
-      });
-    </script>
+    <script></script>
 
     <!-- 코드 입력부분 END -->
 
