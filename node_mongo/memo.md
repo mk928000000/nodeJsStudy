@@ -271,3 +271,48 @@ form 태그에서 method 에 delete/put 도 쓸수있게 하자.
 3. 마이페이지 등에서 내 글만 모아보기
 
 ## 회원인증을 구현하자!
+
+1. 가장 간단한 session 방식으로 구현할 예정.
+2. 터미널 설치
+   npm install passport passport-local express-session
+3. server.js 에 라이브러리 첨부
+   const passport = require('passport');
+   const LocalStrategy = require('passport-local').Strategy;
+   const session = require('express-session');
+
+4. server.js 에 미들웨어 설정
+   app.use(session({secret:'비밀코드', resave: true, saveUninitialized: false}));
+   app.use(passport.initialize());
+   app.use(passport.session());
+   --- '비밀코드' : session 만들때 비밀번호. 아무거나 써도 된다.
+
+5. 로그인 collection 생성
+6. 임시로 데이터를 만든다 {id : 'test', pw : 'test'} 보안은 나중에 신경쓰자
+7. 로그인 시도 시 유효한지 확인 후, 일치하면 사이트를 넘긴다.
+   passport.authenticate(): 검사하세요! id, pw 를 검사해서 유효하면 서버로 연결한다.
+   local 방식으로 확인, 로그인 실패하면 /fail 경로로 이동. (/fail get 기능필요)
+   검사에 성공하면 / 경로로 이동.
+
+   app.post("/login", passport.authenticate("local", {  
+    failureRedirect: "/fail",
+   }),
+   function (req, res) {
+   res.redirect("/");
+   });
+
+8. passport 로 인증하는 방법 작성 ( Strategy 라고 칭함)
+9. 로그인 성공 시 sesison 을 저장하는 코드 작성(로그인 성공 시 발동)
+   passport.serializeUser(function (user, done) {
+   //user.id 정보로 암호문을 만들어 session storage에 보관한다. 세션데이터를 만들고 id 정보를 cookie로 보냄
+   done(null, user.id);
+   });
+
+10. 이 세션 데이터를 가진 사람을 db에서 찾는 코드 작성 (마이페이지 접속시 발동)
+    passport.deserializeUser(function (아이디, done) {
+    done(null, {});
+    });
+
+11. 로그인 시도
+12. 인증 성공하면 세션 + 쿠키가 만들어짐
+    F12 > Application > Storage > Cookie > local..
+    connect.sid Name 으로 Session 이 확인됨.
