@@ -5,17 +5,28 @@
  * // 58080포트에 서버를 어디에다 열겠다.
  *
  */
-
+//기본 서버설정
 const express = require("express");
 const app = express();
-//body parser 라이브러리가 express 에 포함되어있다. 사용하도록 한줄 추가.
-app.use(express.urlencoded({ extended: true }));
+//mongoDB 사용 library
 const MongoClient = require("mongodb").MongoClient; // 몽고db library 필요
+//method GET/POST 이외 사용하기 위한 libarary
 const methodOverride = require("method-override");
-app.use(methodOverride("_method"));
+//session 설정용 library
+const passport = require("passport");
+const LocalStrategy = require("passport-local").Strategy;
+const session = require("express-session");
 
+//body parser 라이브러리가 express 에 포함되어있다.
+app.use(express.urlencoded({ extended: true }));
+app.use(methodOverride("_method"));
 app.set("view engine", "ejs"); // ejs 라이브러리 추가
 app.use("/public", express.static("public")); // css 폴더 (public ) 를 쓸거다 라고 명시.
+app.use(
+  session({ secret: "비밀코드", resave: true, saveUninitialized: false })
+);
+app.use(passport.initialize());
+app.use(passport.session());
 
 var db;
 MongoClient.connect(
@@ -167,4 +178,64 @@ app.get("/detail/:id", function (req, res) {
   db.collection("post").findOne({ _id: req.params.id }, function (err, result) {
     res.render("detail.ejs", { post: result });
   });
+});
+
+//로그인
+app.get("/login", function (req, res) {
+  res.render("login.ejs");
+});
+
+app.post(
+  "/login",
+  passport.authenticate("local", {
+    // passport.authenticate(): 검사하세요! id, pw 를 검사해서 유효하면 서버로 연결한다.
+    // local 방식으로 확인, 로그인 실패하면 /fail 경로로 이동. (/fail get 기능필요)
+    failureRedirect: "/fail",
+  }),
+  function (req, res) {
+    //검사에 성공하면 아래 경로로 보내주세요
+    res.redirect("/");
+  }
+);
+
+// passport 로 인증하는 방법 ( Strategy 라고 칭함.)
+passport.use(
+  new LocalStrategy(
+    {
+      usernameField: "id",
+      passwordField: "pw",
+      session: true, //로그인 후 세션에 저장할 것인가
+      passReqToCallback: false, //입력한 id, pw 말고도 다른 정보 검증 시 true
+    },
+    // 사용자 아이디, 비번 검증하는 부분
+    function (입력한아이디, 입력한비번, done) {
+      console.log(입력한아이디, 입력한비번);
+      db.collection("login").findOne(
+        { id: 입력한아이디 },
+        function (err, result) {
+          // done(err, 성공시 사용자 db데이터, err 메시지)
+          // 보안이 쓔레기다. 원래는 암호화 해서 비교해야한다.
+          // 입력한 비번을 암호화해서 저장하고,
+          // 입력한 비번을 암호화해서 db와 비교해야한다.
+          if (err) return done(err);
+          if (!result)
+            return done(null, false, { message: "존재하지 않는 아이디요" });
+          if (입력한비번 == result.pw) {
+            // 아이디/비번 성공 시 result 를 아래 세션을 저장하는 코드의 user 파람으로보낸다.
+            return done(null, result);
+          } else {
+            return done(null, false, { message: "비번 틀렸어요" });
+          }
+        }
+      );
+    }
+  )
+);
+
+//세션을 저장하는 코드.(로그인 성공 시 발동)
+passport.serializeUser(function (user, done) {
+  done(null, user.id); //user.id 정보로 암호문을 만들어 session storage에 보관한다. 세션데이터를 만들고 id 정보를 cookie로 보냄
+});
+passport.deserializeUser(function (아이디, done) {
+  done(null, {});
 });
