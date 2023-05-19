@@ -316,3 +316,29 @@ form 태그에서 method 에 delete/put 도 쓸수있게 하자.
 12. 인증 성공하면 세션 + 쿠키가 만들어짐
     F12 > Application > Storage > Cookie > local..
     connect.sid Name 으로 Session 이 확인됨.
+
+## 마이페이지 만들기
+
+session 에 있는 사람만 들어갈 수 있게 만들거다
+
+1. mypage 를 get 하는 api 에 미들웨어를 추가한다.
+2. 추가할 미들웨어는 바로 아래 function 으로 만든다.
+   로그인 후 세션이 있으면 항상 req.user 가 존재한다. (F12 > Application > Storage > Cookie > local.. > connect.sid (로그인 시 생성되는 session))
+
+   app.get("/mypage", 로그인했니, function (req, res) {
+   res.render("mypage.ejs");
+   });
+
+   //미들웨어 만들기
+   function 로그인했니(req, res, next) {
+   if (req.user) {
+   next();
+   } else {
+   res.send("로그인을 안했는데여");
+   }
+   }
+
+3. deserialize 에서 로그인한 사용자의 id, pw 외 기타 정보를 불러온다.
+   결과는 mypage 에서 req.user 로 받게된다.
+
+4. 마이페이지로 render 할 때 req.user 를 보내주면 화면에서 확인이 가능하다!
