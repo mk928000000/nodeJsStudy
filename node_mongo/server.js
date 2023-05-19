@@ -180,6 +180,22 @@ app.get("/detail/:id", function (req, res) {
   });
 });
 
+//미들웨어 사용법 페이지와 응답func 사이에 껴넣기
+app.get("/mypage", 로그인했니, function (req, res) {
+  // 아래 deserialized 에서 가져온 user 정보(result) 가 전부 들어가있다.
+  req.user;
+  res.render("mypage.ejs", { user: req.user });
+});
+//미들웨어 만들기
+function 로그인했니(req, res, next) {
+  //로그인 후 세션이 있으면 항상 req.user 가 있음
+  if (req.user) {
+    next();
+  } else {
+    res.send("로그인을 안했는데여");
+  }
+}
+
 //로그인
 app.get("/login", function (req, res) {
   res.render("login.ejs");
@@ -236,6 +252,10 @@ passport.use(
 passport.serializeUser(function (user, done) {
   done(null, user.id); //user.id 정보로 암호문을 만들어 session storage에 보관한다. 세션데이터를 만들고 id 정보를 cookie로 보냄
 });
+//마이페이지 접근 시 세션을 찾는다. ( 세션에 id, pw 말고도 이름,나이,메일주소 등등 다른 정보를 찾고싶을때 사용)
 passport.deserializeUser(function (아이디, done) {
-  done(null, {});
+  //db 에서 위에 있는 user.id 로 유저를 찾은 뒤, 유저 정보를 아래 done(null{요기에 넣음}).
+  db.collection("login").findOne({ id: 아이디 }, function (err, result) {
+    done(null, result);
+  });
 });
