@@ -342,3 +342,31 @@ session 에 있는 사람만 들어갈 수 있게 만들거다
    결과는 mypage 에서 req.user 로 받게된다.
 
 4. 마이페이지로 render 할 때 req.user 를 보내주면 화면에서 확인이 가능하다!
+
+## 환경변수 관리 .env
+
+1. npm install dotenv
+
+2. server.js 에 라이브러리 등록
+   require('dotenv').config()
+
+3. server.js 와 동일한 경로에 .env 파일 생성
+4. .env 에 변경될만한 환경변수를 전부 적고 저장한다.
+5. server.js 에 환경변수로 등록한 값을 교체한다.
+   (기존)
+   var db;
+   MongoClient.connect(
+   "mongodb+srv://nodeMongo:nodeMongo@cluster0.ezcucwb.mongodb.net/?retryWrites=true&w=majority",
+   ...  
+   app.listen(58080, function () { ....
+
+   (변경)
+   var db;
+   MongoClient.connect(process.env.DB_URL,
+   ...
+   app.listen(process.env.PORT, function () {
+
+6. note ) AWS, Google 등 클라우드 이용서버 발행 시 env 파일을 똒같이 사용할 수 있다.
+   Google 같은 경우 env 파일이 아니라 app.yaml 파일 내 환경변수를 포함해야한다.
+
+## 검색기능 만들기
