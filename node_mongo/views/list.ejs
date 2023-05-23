@@ -14,7 +14,7 @@
     />
 
     <link rel="stylesheet" href="/public/main.css" />
-
+    <script src="https://code.jquery.com/jquery-3.4.1.min.js"></script>
     <title>Hello, world!</title>
   </head>
   <body>
@@ -23,6 +23,29 @@
     <!-- navbar  END -->
     <div class="container">
       <h4 class="ml-2 my-3 text-center">서버에서 가져온 할 일 리스트</h4>
+
+      <!-- 검색기능 POST 방법-->
+      <!-- <form action="/search" method="POST">
+        <div class="container input-group mb-2">
+          <input type="text" class="form-control" name="title" />
+          <button class="input-group-append btn btn-danger">검색</button>
+        </div>
+      </form> -->
+      <!-- 검색기능 GET 방법-->
+      <div class="container input-group mb-2">
+        <input type="text" class="form-control" id="search-input" />
+        <button class="input-group-append btn btn-danger" id="search">
+          검색
+        </button>
+      </div>
+      <script>
+        $("#search").click(function () {
+          var 입력한값 = $("#search-input").val();
+          //윈도우주소창의 url 을 바꿔달라는 함수. ( GET 요청! )
+          window.location.replace("/search?value=" + 입력한값);
+        });
+      </script>
+
       <ul class="list-group list-group">
         <% for(var i=0; i < posts.length; i++) { %>
         <li class="list-group-item my">
@@ -39,7 +62,7 @@
         <%} %>
       </ul>
     </div>
-    <script src="https://code.jquery.com/jquery-3.4.1.min.js"></script>
+
     <script>
       $(".delete").click(function (e) {
         var 글번호 = e.target.dataset.id;
