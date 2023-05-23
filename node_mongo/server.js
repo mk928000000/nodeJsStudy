@@ -5,7 +5,9 @@
  * // 58080포트에 서버를 어디에다 열겠다.
  *
  */
-//기본 서버설정
+
+/*      library       */
+//기본 서버설정 library
 const express = require("express");
 const app = express();
 //mongoDB 사용 library
@@ -16,6 +18,8 @@ const methodOverride = require("method-override");
 const passport = require("passport");
 const LocalStrategy = require("passport-local").Strategy;
 const session = require("express-session");
+//환경변수 이용 ㅣlibrary
+require("dotenv").config();
 
 //body parser 라이브러리가 express 에 포함되어있다.
 app.use(express.urlencoded({ extended: true }));
@@ -84,6 +88,29 @@ app.get("/list", function (req, res) {
       // ejs 파일 불러오는것은 방식이 조금 다르다
       // ejs 파일을 불러오면서 db에서 가져온 result 를 posts 라는 이름으로 보낸다
       res.render("list.ejs", { posts: result });
+    });
+});
+
+// 검색 POST 방법
+// app.post("/search", function (req, res) {
+//   db.collection("post")
+//     .find({ 제목: req.body.title })
+//     .toArray(function (err, result) {
+//       console.log(result);
+//       // ejs 파일 불러오는것은 방식이 조금 다르다
+//       // ejs 파일을 불러오면서 db에서 가져온 result 를 posts 라는 이름으로 보낸다
+//       res.render("list.ejs", { posts: result });
+//     });
+// });
+
+// 검색  GET 방법
+app.get("/search", function (req, res) {
+  console.log(req.query.value);
+  db.collection("post")
+    .find({ 제목: req.query.value })
+    .toArray(function (err, result) {
+      console.log(result);
+      //res.render("/list.ejs", { post: result });
     });
 });
 
